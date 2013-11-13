@@ -6,16 +6,17 @@
 }
 
 
-
+<div class="form-inline">
 @using (Html.BeginForm("Index", "Home", FormMethod.Get)) {
 
     @Html.TextBox("dateFrom", Model.DateFrom , new {@placeholder = "From"})
     <text>&nbsp;</text>
     @Html.TextBox("dateTo", Model.DateTo, new { @placeholder = "To" })
     <text>&nbsp;</text>
-    <input type="submit" value="搜索" class="btn  btn-primary" style="vertical-align: top;"/>
+    <input type="submit" value="搜索" class="btn  btn-primary" style="vertical-align:top;" />
 }
-<table>
+</div>
+<table class="table">
     
 @foreach (var userQuiz in Model.UserQuizs)
 {

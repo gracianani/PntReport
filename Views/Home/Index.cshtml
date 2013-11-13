@@ -1,0 +1,97 @@
+﻿@model PntMinisiteReport.Models.PntReportViewModel
+
+@{
+    ViewBag.Title = "Home";
+    var isHeaderPrinted = false;
+}
+
+
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Get)) {
+
+    @Html.TextBox("dateFrom", Model.DateFrom , new {@placeholder = "From"})
+    <text>&nbsp;</text>
+    @Html.TextBox("dateTo", Model.DateTo, new { @placeholder = "To" })
+    <text>&nbsp;</text>
+    <input type="submit" value="搜索" class="btn  btn-primary" style="vertical-align: top;"/>
+}
+<table>
+    
+@foreach (var userQuiz in Model.UserQuizs)
+{
+    if (!isHeaderPrinted)
+    {
+        <tr>
+            <th>
+                问卷ID
+            </th>
+            <th>
+                答题时间
+            </th>
+            <th colspan="2">
+                所在地
+            </th>
+            @foreach (var userQuizQuestion in userQuiz.userQuizAnswers.GroupBy(i => i.answer.questionId))
+            {
+                var question = @Model.Questions.Single(i => i.questionId == userQuizQuestion.Key);
+                <th colspan="@question.answers.Count">
+                    @question.questionText
+                </th>
+            }
+        </tr>
+        <tr>
+            <th>
+                &nbsp;
+            </th>
+            <th>
+                &nbsp;
+            </th>
+            <th colspan="2">
+                &nbsp;
+            </th>
+            @foreach (var userQuizQuestion in userQuiz.userQuizAnswers.GroupBy(i => i.answer.questionId))
+            {
+                var question = @Model.Questions.Single(i => i.questionId == userQuizQuestion.Key);
+                <text></text>
+                foreach (var answer in question.answers)
+                {
+                    <th>
+                        @answer.answerText
+                    </th>
+                }
+            }
+        </tr>
+            isHeaderPrinted = true;
+    }
+    <tr>
+        <td>@userQuiz.quizId</td>
+        <td>@userQuiz.quizCreationDate</td>
+        @if (userQuiz.user != null)
+        {
+            <td>@(userQuiz.user.city != null ? userQuiz.user.city.cityName : "")</td>
+            <td>@(userQuiz.user.province != null ? userQuiz.user.province.provinceName : "")</td>
+        }
+        else
+        {
+            <td colspan="2">&nbsp;</td>
+        }
+        @foreach (var userQuizAnswer in userQuiz.userQuizAnswers.GroupBy(i => i.answer.questionId))
+        {
+
+            var question = @Model.Questions.Single(i => i.questionId == userQuizAnswer.Key);
+            <text></text>
+            foreach (var answer in question.answers)
+            {
+                if (userQuizAnswer.Count(i => i.answerId == answer.answerId) > 0)
+                {
+                    <td>&radic;</td>
+                }
+                else
+                {
+                    <td>&nbsp;</td>
+                }
+            }
+        }
+    </tr>
+}
+</table>
